@@ -1,0 +1,61 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+trigger:
+- master
+stages:
+- stage: Build
+  displayName: Build
+  jobs:
+  - job: SPFx
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '8.x'
+        displayName: 'Install Node.js'
+      - script: |
+          cd spfx
+          npm ci
+          gulp bundle --ship
+          gulp package-solution --ship
+        displayName: 'Build DEV package'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: '$(Build.SourcesDirectory)/sharepoint/solution/react-microsoft-graph.sppkg' 
+          artifactName: 'drop' 
+        displayName: 'Publish SPFx solution'
+  - job: O365_Scripts
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    steps:
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: '$(Build.SourcesDirectory)/devops/office365-CLI-deploy-app.sh' 
+          artifactName: 'drop' 
+        displayName: 'Publish o365 CLI scripts'
+- stage: Deploy
+  displayName: Deploy
+  jobs:
+  - deployment: SPFx
+    displayName: SPFx
+    pool:
+      vmImage: Ubuntu-16.04
+    environment: staging
+    #Your build pipeline references a secret variable named ‘pass’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
+    variables:
+      site: 'https://velingeorgiev.sharepoint.com/sites/aad'
+      email: 'me@velingeorgiev.onmicrosoft.com'
+      scope: 'sitecollection'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            displayName: 'Bash Script'
+            inputs:
+              targetType: filePath
+              filePath: '../drop/office365-CLI-deploy-app.sh'
+              arguments: '$(site) $(email) $(pass) $(scope)'
