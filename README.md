@@ -1,5 +1,8 @@
 ## react-microsoft-graph
 
+https://docs.microsoft.com/en-us/sharepoint/dev/spfx/use-aad-tutorial
+
+
 This is where you include your WebPart documentation.
 
 ### Building the code

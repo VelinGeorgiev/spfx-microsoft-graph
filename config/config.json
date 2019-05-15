@@ -2,17 +2,27 @@
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
   "version": "2.0",
   "bundles": {
-    "ms-graph-basics-web-part": {
+    "ms-graph-basics": {
       "components": [
         {
           "entrypoint": "./lib/webparts/msGraphBasics/MsGraphBasicsWebPart.js",
           "manifest": "./src/webparts/msGraphBasics/MsGraphBasicsWebPart.manifest.json"
+        },
+        {
+          "entrypoint": "./lib/webparts/aadHttpClient/AadHttpClientWebPart.js",
+          "manifest": "./src/webparts/aadHttpClient/AadHttpClientWebPart.manifest.json"
+        },
+        {
+          "entrypoint": "./lib/webparts/pnpJsMsGraph/PnPJsMsGraphWebPart.js",
+          "manifest": "./src/webparts/pnpJsMsGraph/PnPJsMsGraphWebPart.manifest.json"
         }
       ]
     }
   },
   "externals": {},
   "localizedResources": {
-    "MsGraphBasicsWebPartStrings": "lib/webparts/msGraphBasics/loc/{locale}.js"
+    "MsGraphBasicsWebPartStrings": "lib/webparts/msGraphBasics/loc/{locale}.js",
+    "AadHttpClientWebPartStrings": "lib/webparts/aadHttpClient/loc/{locale}.js",
+    "PnPJsMsGraphWebPartStrings": "lib/webparts/pnpJsMsGraph/loc/{locale}.js"
   }
 }
